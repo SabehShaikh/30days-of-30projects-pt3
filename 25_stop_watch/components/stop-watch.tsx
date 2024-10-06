@@ -33,19 +33,22 @@ export default function StopWatch() {
 
   // useEffect to handle the stopwatch timer:
   useEffect(() => {
-    let interval: NodeJS.Timer;
+    let interval: NodeJS.Timeout;
     if (isRunning) {
       interval = setInterval(() => {
         setTime((prevTime) => prevTime + 10); // Increment time by 10ms
       }, 10);
     }
-  }, [isRunning]);
+
+    // Cleanup function to clear the interval when `isRunning` becomes false or component unmounts
+    return () => clearInterval(interval);
+  }, [isRunning]); // This runs whenever `isRunning` changes
 
   const handleStart = () => {
     setIsRunning(true);
   };
 
-const handleStop = () => {
+  const handleStop = () => {
     setIsRunning(false);
   };
   const handleReset = () => {
@@ -64,37 +67,39 @@ const handleStop = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-4">
-      <Card className="w-full max-w-lg">
-        <CardHeader className="flex flex-col items-center justify-center">
-          <CardTitle className="text-5xl font-bold">Stopwatch</CardTitle>
-          <CardDescription className="text-lg text-gray-600">
+      <Card className="w-full max-w-lg p-4 md:p-6 lg:p-8">
+        <CardHeader className="flex flex-col items-center justify-center text-center">
+          <CardTitle className="text-3xl md:text-4xl lg:text-5xl font-bold">
+            Stopwatch
+          </CardTitle>
+          <CardDescription className="text-sm md:text-base lg:text-lg text-gray-600">
             Track your time with this stopwatch.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center gap-8 p-4">
+        <CardContent className="flex flex-col items-center justify-center gap-6 md:gap-8 p-2 md:p-4">
           {/* Display the elapsed time */}
-          <div className="text-8xl font-bold">
+          <div className="text-5xl md:text-6xl lg:text-8xl font-bold">
             {minutes.toString().padStart(2, "0")}:
             {seconds.toString().padStart(2, "0")}.
             {milliseconds.toString().padStart(2, "0")}
           </div>
           {/* Buttons to control the stopwatch */}
-          <div className="flex gap-4">
+          <div className="flex gap-2 md:gap-4">
             <Button
               onClick={isRunning ? handleStop : handleStart}
-              className="px-6 py-2 text-lg font-medium rounded-lg"
+              className="px-4 py-1.5 md:px-6 md:py-2 text-sm md:text-lg font-medium rounded-lg"
             >
               {isRunning ? "Stop" : "Start"}
             </Button>
             <Button
               onClick={handleReset}
-              className="px-6 py-2 text-lg font-medium rounded-lg"
+              className="px-4 py-1.5 md:px-6 md:py-2 text-sm md:text-lg font-medium rounded-lg"
             >
               Reset
             </Button>
             <Button
               onClick={handleLap}
-              className="px-6 py-2 text-lg font-medium rounded-lg"
+              className="px-4 py-1.5 md:px-6 md:py-2 text-sm md:text-lg font-medium rounded-lg"
             >
               Lap
             </Button>
@@ -102,12 +107,12 @@ const handleStop = () => {
           {/* Display the list of lap times */}
           <div className="w-full max-w-md">
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gray-200">
-                <CardTitle className="text-xl font-semibold">
+              <CardHeader className="bg-gray-200 p-2 md:p-4">
+                <CardTitle className="text-lg md:text-xl font-semibold">
                   Lap Times
                 </CardTitle>
               </CardHeader>
-              <CardContent className="max-h-[300px] overflow-auto p-0">
+              <CardContent className="max-h-[200px] md:max-h-[300px] overflow-auto p-0">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -142,34 +147,37 @@ const handleStop = () => {
             </Card>
           </div>
         </CardContent>
-            {/* Social media icons */}
-      <div className="mt-8 flex justify-center space-x-5">
-        <a
-          href="https://github.com/SabehShaikh"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit my GitHub profile"
-          className="text-gray-800 hover:text-gray-500"
-        >
-          <FaGithub size={30} />
-        </a>
-        <a
-          href="https://www.linkedin.com/in/sabeh-shaikh/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visit my LinkedIn profile"
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-500"
-        >
-          <FaLinkedin size={30} />
-        </a>
-      </div>
 
-      {/* Footer text */}
-      <div className="text-center text-sm text-gray-500 mt-4">
-        Made by Sabeh Shaikh
-      </div>
+        {/* Social media icons */}
+        <div className="mt-6 md:mt-8 flex justify-center space-x-4 md:space-x-5">
+          <a
+            href="https://github.com/SabehShaikh"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my GitHub profile"
+            className="text-gray-800 hover:text-gray-500"
+          >
+            <FaGithub className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sabeh-shaikh/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my LinkedIn profile"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-500"
+          >
+            {/*set the width and height to 6 units (approximately 24px). 
+           increase the width and height to 8 units (approximately 32px)
+           on medium screens and above.*/}
+            <FaLinkedin className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+        </div>
+
+        {/* Footer text */}
+        <div className="text-center text-xs md:text-sm text-gray-500 mt-4">
+          Made by Sabeh Shaikh
+        </div>
       </Card>
-  
     </div>
   );
 }
