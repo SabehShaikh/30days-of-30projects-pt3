@@ -1,10 +1,9 @@
-"use client"; // Enables client-side rendering for this component
-
-import { useState, useEffect, useCallback, useRef } from "react"; // Import React hooks
-import { Button } from "@/components/ui/button"; // Import custom Button component
-import { PauseIcon, PlayIcon, RefreshCcwIcon } from "lucide-react"; // Import icons from lucide-react
-
-// Define the possible game states
+"use client";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { PauseIcon, PlayIcon, RefreshCcwIcon } from "lucide-react";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
+// define the possible game states:
 enum GameState {
   START,
   PAUSE,
@@ -12,7 +11,7 @@ enum GameState {
   GAME_OVER,
 }
 
-// Define the directions for the snake movement
+// Define the directions for the snake movement:
 enum Direction {
   UP,
   DOWN,
@@ -26,27 +25,37 @@ interface Position {
   y: number;
 }
 
-// Initial state for the snake and food
+// Initial state for the snake and food:
 const initialSnake: Position[] = [{ x: 0, y: 0 }];
 const initialFood: Position = { x: 5, y: 5 };
 
 export default function SnakeGame() {
-  // State to manage the game
-  const [gameState, setGameState] = useState<GameState>(GameState.START);
+  // Tracks the current game state (start, running, paused, or game over).
+  const [gameState, setGameState] = useState(GameState.START);
+  // Holds the snake's current position as an array of Position objects:
   const [snake, setSnake] = useState<Position[]>(initialSnake);
+  // Holds the food's current position as a Position object:
   const [food, setFood] = useState<Position>(initialFood);
+  // Tracks the current direction of the snake:
   const [direction, setDirection] = useState<Direction>(Direction.RIGHT);
+  //   Tracks the current score:
   const [score, setScore] = useState<number>(0);
+  //   Tracks the highest score achieved in the game:
   const [highScore, setHighScore] = useState<number>(0);
+  // Tracks the interval ID for the game loop:
   const gameInterval = useRef<NodeJS.Timeout | null>(null);
 
-  // Function to move the snake
+  // function to move the snake:
   const moveSnake = useCallback(() => {
     setSnake((prevSnake) => {
+      if (prevSnake.length === 0) return prevSnake; // Ensure there's a snake
+  
       const newSnake = [...prevSnake];
       const head = newSnake[0];
+      if (!head) return newSnake; // Ensure the head exists
+  
       let newHead: Position;
-
+  
       switch (direction) {
         case Direction.UP:
           newHead = { x: head.x, y: head.y - 1 };
@@ -63,28 +72,27 @@ export default function SnakeGame() {
         default:
           return newSnake;
       }
-
-      newSnake.unshift(newHead);
-
+  
+      // Check if the snake eats the food
       if (newHead.x === food.x && newHead.y === food.y) {
-        // Snake eats the food
         setFood({
           x: Math.floor(Math.random() * 10),
           y: Math.floor(Math.random() * 10),
         });
         setScore((prevScore) => prevScore + 1);
       } else {
-        newSnake.pop(); // Remove the last part of the snake's body
+        newSnake.pop(); // Remove the last part of the snake
       }
-
+  
+      newSnake.unshift(newHead); // Add the new head to the snake
       return newSnake;
     });
   }, [direction, food]);
 
-  // Function to handle key press events
+  //   Handle Key Press Events:
   const handleKeyPress = useCallback(
-    (event: KeyboardEvent) => {
-      switch (event.key) {
+    (e: KeyboardEvent) => {
+      switch (e.key) {
         case "ArrowUp":
           if (direction !== Direction.DOWN) setDirection(Direction.UP);
           break;
@@ -105,7 +113,7 @@ export default function SnakeGame() {
   // useEffect to handle the game interval and key press events
   useEffect(() => {
     if (gameState === GameState.RUNNING) {
-      gameInterval.current = setInterval(moveSnake, 200);
+      gameInterval.current = setInterval(moveSnake, 150);
       document.addEventListener("keydown", handleKeyPress);
     } else {
       if (gameInterval.current) clearInterval(gameInterval.current);
@@ -185,6 +193,8 @@ export default function SnakeGame() {
             </Button>
           </div>
         </div>
+
+        {/* Game Grid */}
         <div className="bg-[#0F0F0F] rounded-lg p-4 grid grid-cols-10 gap-1">
           {Array.from({ length: 100 }).map((_, i) => {
             const x = i % 10;
@@ -207,9 +217,38 @@ export default function SnakeGame() {
             );
           })}
         </div>
+
+        {/* Score Display */}
         <div className="flex items-center justify-between mt-6 text-[#00FFFF]">
           <div>Score: {score}</div>
           <div>High Score: {highScore}</div>
+        </div>
+
+        {/* Social Media Links */}
+        <div className="mt-6 md:mt-8 flex justify-center space-x-4 md:space-x-5">
+          <a
+            href="https://github.com/SabehShaikh"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my GitHub profile"
+            className="text-[#FF00FF] hover:text-[#FF99FF]"
+          >
+            <FaGithub className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sabeh-shaikh/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my LinkedIn profile"
+            className="text-[#00FFFF] hover:text-[#66FFFF]"
+          >
+            <FaLinkedin className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+        </div>
+
+        {/* Footer Text */}
+        <div className="text-center text-xs md:text-sm text-gray-500 mt-4">
+          Made by Sabeh Shaikh
         </div>
       </div>
     </div>
