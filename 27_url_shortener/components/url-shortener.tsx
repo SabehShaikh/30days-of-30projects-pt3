@@ -4,7 +4,8 @@ import React, { useState } from "react"; // Import React and useState hook
 import { Input } from "@/components/ui/input"; // Import custom Input component
 import { Button } from "@/components/ui/button"; // Import custom Button component
 import { CopyIcon } from "lucide-react"; // Import CopyIcon from lucide-react
-import axios from "axios"; // Import axios for HTTP requests
+import axios from "axios"; // Import axios for HTTP requests\
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const BITLY_API_URL = "https://api-ssl.bitly.com/v4/shorten";
 const BITLY_ACCESS_TOKEN = process.env.NEXT_PUBLIC_BITLY_ACCESS_TOKEN;
@@ -48,7 +49,7 @@ export default function URLShortener() {
 
   // JSX return statement rendering the URL Shortener UI
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-primary to-secondary">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
       <div className="max-w-md w-full space-y-4 p-6 rounded-lg bg-background shadow-lg">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">URL Shortener</h1>
@@ -64,12 +65,12 @@ export default function URLShortener() {
               placeholder="Paste your long URL here"
               value={longUrl}
               onChange={(e) => setLongUrl(e.target.value)}
-              className="pr-16"
+              className="pr-24"
               required
             />
             <Button
               type="submit"
-              className="absolute top-1/2 right-2 -translate-y-1/2"
+              className="absolute top-1/2 right-0 -translate-y-1/2"
             >
               Shorten
             </Button>
@@ -99,6 +100,35 @@ export default function URLShortener() {
             </div>
           )}
         </form>
+        {/* Social media icons */}
+        <div className="mt-6 md:mt-8 flex justify-center space-x-4 md:space-x-5">
+          <a
+            href="https://github.com/SabehShaikh"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my GitHub profile"
+            className="text-gray-800 hover:text-gray-500"
+          >
+            <FaGithub className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sabeh-shaikh/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit my LinkedIn profile"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-500"
+          >
+            {/*set the width and height to 6 units (approximately 24px). 
+           increase the width and height to 8 units (approximately 32px)
+           on medium screens and above.*/}
+            <FaLinkedin className="w-6 h-6 md:w-8 md:h-8" />
+          </a>
+        </div>
+
+        {/* Footer text */}
+        <div className="text-center text-sm md:text-sm text-gray-500 mt-4">
+          Made by Sabeh Shaikh
+        </div>
       </div>
     </div>
   );
